@@ -1,0 +1,4 @@
+.App{
+    min-height: 100vh;
+    background: url("./img/mainBg.jpg") no-repeat center / cover;
+}
