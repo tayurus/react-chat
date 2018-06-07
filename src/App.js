@@ -3,6 +3,7 @@ import "./App.css";
 
 import { Message } from "./Components/Message/Message";
 import { UserPreview } from "./Components/UserPreview/UserPreview";
+import { SearchInput } from "./Components/searchInput/SearchInput";
 
 class App extends Component {
     render() {
@@ -10,6 +11,7 @@ class App extends Component {
             <div className="App">
                 <Message />
                 <UserPreview />
+                <SearchInput />
             </div>
         );
     }
