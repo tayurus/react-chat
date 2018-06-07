@@ -1,0 +1,48 @@
+.user-preview{
+    max-width: 373px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-preview__img{
+    width: 73px;
+    height: 74px;
+    border: 5px solid #6f6198;
+    border-radius: 100%;
+}
+
+.user-preview__img_online{
+    position: relative;
+}
+
+.user-preview__img_online::after{
+    position: absolute;
+    bottom: -5px;
+    right: -8px;
+    content: "";
+    width: 25px;
+    height: 26px;
+    border-radius: 100%;
+    background: #2ecb70 url('img/statusOnline.png') no-repeat center / 12px 9px;
+}
+
+.user-preview__info{
+    width: 251px;
+}
+
+.user-preview__name{
+    color: #ffffff;
+    font-family: "Roboto";
+    font-size: 27px;
+    margin-bottom: 14px;
+}
+
+.user-preview__text{
+    color: #b59ec6;
+    font-family: "Roboto";
+    font-size: 19px;
+    font-weight: 300;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

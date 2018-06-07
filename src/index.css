@@ -1,0 +1,18 @@
+@font-face {
+    src: url("./fonts/Open-Sans.ttf");
+    font-family: "Open Sans";
+}
+@font-face {
+    src: url("./fonts/Roboto-Regular.ttf");
+    font-family: "Roboto";
+}
+
+*{
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
