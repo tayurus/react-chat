@@ -1,0 +1,121 @@
+.message-controls{
+    max-width: 546px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 31px 14px 43px;
+    background-color: #373351;
+}
+
+.message-controls__attach{
+    display: block;
+    width: 17px;
+    height: 28px;
+    cursor: pointer;
+    background: url("img/attach.png") no-repeat center / contain;
+}
+
+.message-controls__attach input{
+    visibility: hidden;
+}
+
+.message-controls__message-input{
+    height: 29px;
+    background-color: #373351;
+    border: none;
+    outline: none;
+    color: #fff;
+    width: calc(100% - 170px);
+    font-family: "Roboto";
+    line-height: 25px;
+    font-size: 20px;
+    resize: none;
+}
+
+.message-controls__message-input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #8f8497;
+    font-family: "Roboto";
+    font-size: 20px;
+}
+.message-controls__message-input::-moz-placeholder { /* Firefox 19+ */
+    color: #8f8497;
+    font-family: "Roboto";
+    font-size: 20px;
+}
+.message-controls__message-input:-ms-input-placeholder { /* IE 10+ */
+    color: #8f8497;
+    font-family: "Roboto";
+    font-size: 20px;
+}
+.message-controls__message-input:-moz-placeholder { /* Firefox 18- */
+    color: #8f8497;
+    font-family: "Roboto";
+    font-size: 20px;
+}
+
+.message-controls__send{
+    width: 57px;
+    height: 58px;
+    border-radius: 100%;
+    border: none;
+    cursor: pointer;
+    background: #fff url('img/send.png') no-repeat center / 27px 24px;
+}
+
+.message-controls__emojis{
+    width: 36px;
+    height: 34px;
+    background: url("img/emojis.png") no-repeat center / contain;
+    cursor: pointer;
+}
+
+.message-controls__emojis-wrapper{
+    position: relative;
+}
+
+.message-controls__emojis-list{
+    display: none;
+    position: absolute;
+    top: -200px;
+    left: -157px;
+    width: 300px;
+    height: 200px;
+    padding: 15px;
+    grid-template-columns: 80px 80px 80px;
+    grid-template-rows: 80px 80px;
+    grid-gap: 15px;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+.message-controls__emojis-wrapper:hover  .message-controls__emojis-list{
+    display: grid;
+}
+
+.message-controls__emojis-item{
+    height: 100%;
+    cursor: pointer;
+}
+
+.emoji__bitch{
+    background: url("img/emojis/bitch.png") no-repeat center / contain;
+}
+
+.emoji__coolstory{
+    background: url("img/emojis/coolstory.png") no-repeat center / contain;
+}
+
+.emoji__fu{
+    background: url("img/emojis/fu.png") no-repeat center / contain;
+}
+.emoji__kaboom{
+    background: url("img/emojis/kaboom.png") no-repeat center / contain;
+}
+.emoji__perfect{
+    background: url("img/emojis/perfect.png") no-repeat center / contain;
+}
+.emoji__sup{
+    background: url("img/emojis/sup.png") no-repeat center / contain;
+}
