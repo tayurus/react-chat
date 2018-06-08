@@ -1,0 +1,6 @@
+.usersTable{
+    max-width: 517px;
+    overflow: auto;
+    max-height: 864px;
+    background: rgba(55, 51, 81, 0.3);
+}
