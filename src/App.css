@@ -1,4 +1,17 @@
 .App{
     min-height: 100vh;
     background: url("./img/mainBg.jpg") no-repeat center / cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.App__wrapper{
+    max-width: 1062px;
+    max-height: 864px;
+    height: 100vh;
+    display: flex;
+    border-radius: 3%;
+    overflow: hidden;
 }

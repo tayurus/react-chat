@@ -1,8 +1,14 @@
 .search-input{
+    width: 100%;
+    padding: 30px;
+}
+
+.search-input__field{
     background: #373351 url("img/search.png") no-repeat 23px center / 20px;
     border: 1px solid #6f6198;
     border-radius: 20px;
-    max-width: 380px;
+    max-width: 100%;
+    width: 100%;
     color: #ffffff;
     font-family: "Roboto";
     font-size: 18px;
@@ -29,4 +35,23 @@
     color: #ffffff;
     font-family: "Roboto";
     font-size: 18px;
+}
+
+@media (max-width:910px),(max-device-width:910px) {
+    .search-input {
+        padding: 10px;
+    }
+}
+
+@media (max-width:540px),(max-device-width:540px) {
+    .search-input {
+        padding: 10px;
+    }
+
+    .search-input__field{
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+        background: #373351 url("img/search.png") no-repeat center / 20px;
+    }
 }

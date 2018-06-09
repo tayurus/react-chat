@@ -3,9 +3,8 @@ import "./App.css";
 
 import { Message } from "./Components/Message/Message";
 import { UserPreview } from "./Components/UserPreview/UserPreview";
-import { SearchInput } from "./Components/searchInput/SearchInput";
-import { MessageControls } from "./Components/MessageControls/MessageControls";
 import { UsersTable } from "./Components/UsersTable/UsersTable";
+import { MessageTable } from "./Components/MessageTable/MessageTable";
 
 class App extends Component {
     constructor(props){
@@ -24,11 +23,12 @@ class App extends Component {
                         },
                         {
                             type : "outgoing",
-                            text : "What do you want!?",
+                            text : "What do you want!?What do you want!?What do you want!?What do you want!?",
                             date: new Date()
                         }
                     ]
                 },
+
                 {
                     username : "User2",
                     status : "offline",
@@ -45,7 +45,7 @@ class App extends Component {
                         },
                         {
                             type : "incoming emoji",
-                            text : "fu",
+                            text : "sup",
                             date: new Date()
                         }
                     ]
@@ -57,11 +57,11 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <Message />
-                <UserPreview />
-                <SearchInput />
-                <MessageControls />
+                <div className="App__wrapper">
                 <UsersTable dialogs={this.state.dialogs} />
+                <MessageTable dialog={this.state.dialogs[1]}/>
+                </div>
+
             </div>
         );
     }

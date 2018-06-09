@@ -3,13 +3,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+    padding: 25px 0px;
+    margin: 0px 25px;
 }
 
+
 .user-preview__img{
-    width: 73px;
-    height: 74px;
+    min-width: 73px;
+    max-width: 73px;
+    min-height: 74px;
+    max-height: 74px;
     border: 5px solid #6f6198;
     border-radius: 100%;
+    margin-right: 15px;
 }
 
 .user-preview__img_online{
@@ -45,4 +52,34 @@
     font-weight: 300;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
+}
+
+@media (max-width:910px),(max-device-width:910px) {
+    .user-preview {
+        padding: 10px 0px;
+        margin: 0px 10px;
+    }
+}
+
+@media (max-width:540px),(max-device-width:540px) {
+    .user-preview{
+        margin: 0px 5px;
+        padding: 5px;
+    }
+
+    .user-preview__img {
+        min-width: 40px;
+        max-width: 40px;
+        min-height: 40px;
+        max-height: 40px;
+        border: 2px solid #6f6198;
+        border-radius: 100%;
+    }
+
+    .user-preview__img_online::after{
+        width: 15px;
+        height: 16px;
+        background: #2ecb70 url('img/statusOnline.png') no-repeat center / 9px 7px;
+    }
 }

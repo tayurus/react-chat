@@ -1,0 +1,71 @@
+.message-table{
+    max-width: 546px;
+    background-color: #373351;
+    padding: 10px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.message-table__user-info{
+    border-bottom: 1px solid #ffffff10;
+    padding: 10px 10px 10px 0px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.message-table__user-img{
+    min-width: 73px;
+    max-width: 73px;
+    min-height: 74px;
+    max-height: 74px;
+    border: 5px solid #6f6198;
+    border-radius: 100%;
+    margin-right: 15px;
+}
+
+.message-table__user-name{
+    color: #ffffff;
+    font-family: "Roboto";
+    font-size: 25px;
+    font-weight: bolder;
+}
+
+.message-table__user-status{
+    color: #8f8497;
+    font-family: Roboto;
+    font-size: 19px;
+    font-weight: 400;
+}
+
+
+.message-table__messages{
+    height: 78%;
+    overflow-y: auto;
+    /* overflow-x: ; */
+}
+
+@media (max-width:540px),(max-device-width:540px) {
+    .message-table{
+        padding: 10px;
+    }
+
+    .message-table__user-name{
+        font-size: 18px;
+    }
+
+    .message-table__user-img{
+        min-width: 50px;
+        max-width: 50px;
+        min-height: 50px;
+        max-height: 50px;
+        border: 2px solid #6f6198;
+        border-radius: 100%;
+        margin-right: 10px;
+    }
+
+    .message-table__user-status{
+        font-size: 15px;
+    }
+}

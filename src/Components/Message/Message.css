@@ -22,6 +22,15 @@
     padding-left: 15px;
 }
 
+.message_outgoing{
+    margin-left: 11vw;
+    margin-right: 20px;
+}
+
+.message_incoming{
+    margin-left: 10px;
+}
+
 .message_incoming .message__text{
     background-color: #6f6198;
     padding: 20px 60px 20px 20px;
@@ -55,4 +64,29 @@
 .message_outgoing .message__date{
     text-align: right;
     padding-right: 15px;
+}
+
+.message[class*='emoji__']{
+    height: 150px;
+    position: relative;
+}
+
+.message[class*='emoji__'] .message__date{
+    position: absolute;
+    bottom: -30px;
+}
+
+@media (max-width:540px),(max-device-width:540px) {
+    .message__text{
+        font-size: 14px;
+    }
+
+    .message_incoming .message__text{
+        padding: 10px 40px 10px 10px;
+    }
+
+    .message_outgoing .message__text {
+        background-color: #464067;
+        padding: 12px 15px 10px 27px;
+    }
 }

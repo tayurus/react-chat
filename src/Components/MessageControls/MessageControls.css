@@ -3,8 +3,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 31px 14px 43px;
+    padding: 14px 31px 0px 30px;
     background-color: #373351;
+    border-top: 1px solid #ffffff10;
+    flex-wrap:wrap;
 }
 
 .message-controls__attach{
@@ -17,6 +19,7 @@
 
 .message-controls__attach input{
     visibility: hidden;
+    width: 0px;
 }
 
 .message-controls__message-input{
@@ -35,22 +38,22 @@
 .message-controls__message-input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
     color: #8f8497;
     font-family: "Roboto";
-    font-size: 20px;
+    font-size: 16px;
 }
 .message-controls__message-input::-moz-placeholder { /* Firefox 19+ */
     color: #8f8497;
     font-family: "Roboto";
-    font-size: 20px;
+    font-size: 16px;
 }
 .message-controls__message-input:-ms-input-placeholder { /* IE 10+ */
     color: #8f8497;
     font-family: "Roboto";
-    font-size: 20px;
+    font-size: 16px;
 }
 .message-controls__message-input:-moz-placeholder { /* Firefox 18- */
     color: #8f8497;
     font-family: "Roboto";
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .message-controls__send{
@@ -118,4 +121,12 @@
 }
 .emoji__sup{
     background: url("img/emojis/sup.png") no-repeat center / contain;
+}
+
+@media (max-width:910px),(max-device-width:910px) {
+    .message-controls__message-input{
+        order: -1;
+        width: 100%;
+        text-align: center;
+    }
 }
