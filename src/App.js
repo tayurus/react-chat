@@ -93,7 +93,7 @@ class App extends Component {
   searchUsers(phrase) {
     let state = this.state;
     state.dialogs = state.dialogs.map(dialog => {
-      if (dialog.username.indexOf(phrase) != -1) {
+      if (dialog.username.toLowerCase().indexOf(phrase.toLowerCase()) != -1) {
         console.log({ dialog, visible: true });
         return { ...dialog, visible: true };
       } else {
