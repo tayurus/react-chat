@@ -12,7 +12,8 @@ export class SearchInput extends React.Component{
             <div className="search-input">
                 <input type="search"
                        placeholder="Search"
-                       className="search-input__field"/>
+                       className="search-input__field"
+                       onChange={(e)=>this.props.searchUsers(e.target.value)}/>
             </div>
         )
     }
