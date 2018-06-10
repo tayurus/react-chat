@@ -1,5 +1,6 @@
 .message-table{
     max-width: 546px;
+    flex-grow: 1;
     background-color: #373351;
     padding: 10px 30px;
     display: flex;

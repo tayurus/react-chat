@@ -10,6 +10,7 @@
 .App__wrapper{
     max-width: 1062px;
     max-height: 864px;
+    width: 95%;
     height: 100vh;
     display: flex;
     border-radius: 3%;

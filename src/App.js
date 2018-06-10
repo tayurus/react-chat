@@ -10,8 +10,10 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.searchUsers = this.searchUsers.bind(this);
+    this.showDialog = this.showDialog.bind(this);
     this.state = {
       username: "User",
+      currentDialog: 0,
       dialogs: [
         {
           id: 0,
@@ -75,13 +77,17 @@ class App extends Component {
             },
             {
               type: "incoming emoji",
-              text: "kek",
+              text: "bitch",
               date: new Date()
             }
           ]
         }
       ]
     };
+  }
+
+  showDialog(id) {
+    this.setState({ currentDialog: id });
   }
 
   searchUsers(phrase) {
@@ -105,8 +111,11 @@ class App extends Component {
           <UsersTable
             searchUsers={this.searchUsers}
             dialogs={this.state.dialogs}
+            showDialog={this.showDialog}
           />
-          <MessageTable dialog={this.state.dialogs[1]} />
+          <MessageTable
+            dialog={this.state.dialogs[this.state.currentDialog]}
+          />
         </div>
       </div>
     );

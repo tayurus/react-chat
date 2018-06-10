@@ -16,6 +16,8 @@ export class UsersTable extends React.Component{
                     return (<UserPreview status={dialog.status}
                                          username={dialog.username}
                                          text={dialog.messagesHistory.slice(-1)[0].text}
+                                         id={dialog.id}
+                                         showDialog={this.props.showDialog}
                             />)
                         })
                 }
