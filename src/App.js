@@ -86,6 +86,22 @@ class App extends Component {
     };
   }
 
+  componentDidMount(){
+    var sock = new SockJS('http://127.0.0.1:3000');
+    sock.onopen = function() {
+        console.log('open');
+    };
+    sock.onmessage = function(e) {
+        console.log('message', e.data);
+    };
+    sock.onclose = function() {
+        console.log('close');
+    };
+
+    sock.send('test');
+    sock.close();
+  }
+
   showDialog(id) {
     this.setState({ currentDialog: id });
   }
