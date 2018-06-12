@@ -17,3 +17,19 @@
     border-radius: 3%;
     overflow: hidden;
 }
+
+.App__header{
+    display: flex;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+}
+
+.App__header-link{
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 20px;
+}

@@ -1,5 +1,6 @@
+var WebSocketServer = new require('ws');
+var server = new WebSocketServer.Server({  port: 5001});
 const express = require('express');
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -52,29 +53,7 @@ app.get('/users', (req, res) => {
         ]
       },
 
-      {
-        id: 2,
-        username: "Petya",
-        status: "offline",
-        visible: true,
-        messagesHistory: [
-          {
-            type: "outgoing",
-            text: "Jopa?",
-            date: new Date()
-          },
-          {
-            type: "incoming",
-            text: "No!?",
-            date: new Date()
-          },
-          {
-            type: "incoming emoji",
-            text: "bitch",
-            date: new Date()
-          }
-        ]
-      }
+
     ]
   }
 );
