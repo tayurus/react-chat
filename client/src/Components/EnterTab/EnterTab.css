@@ -50,3 +50,11 @@
     font-weight: bold;
     font-size: 18px;
 }
+
+.EnterTab__success{
+    margin-top: 10px;
+    text-align: center;
+    color: lime;
+    font-weight: bold;
+    font-size: 18px;
+}

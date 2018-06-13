@@ -5,6 +5,8 @@ export class EnterTab extends React.Component {
     constructor(props) {
         super(props);
         this.validateOnSubmit = this.validateOnSubmit.bind(this);
+        this.register = this.register.bind(this);
+        this.state = {message: "", messageType: ""}
     }
 
     validateOnBlur(e) {
@@ -16,36 +18,69 @@ export class EnterTab extends React.Component {
         let inputValue = e.target.value;
 
         //validate
-        if (!reg.test(inputValue))
-            e.target.classList.add("EnterTab__field_error");
+        if (!reg.test(inputValue)) e.target.classList.add("EnterTab__field_error");
         else e.target.classList.remove("EnterTab__field_error");
     }
 
     validateOnSubmit() {
+        let dataValid = true;
         let regexs = {
             username: /[a-z0-9]{3,20}/i,
             password: /^[a-z0-9]{8,32}$/i
-        }
+        };
 
         let username = this.refs.username.value;
         let password = this.refs.password.value;
-        if (!regexs['username'].test(username) || !regexs['password'].test(password)){
-            document.querySelector('.EnterTab__error').removeAttribute('hidden');
-        }
-        else{
-            document.querySelector('.EnterTab__error').setAttribute('hidden','true');
+        if (!regexs["username"].test(username) || !regexs["password"].test(password)) {
+            this.setState({message: "Please check input data!", messageType: "error"});
+            dataValid = false;
+        } else {
+            this.setState({message: ""});
         }
 
-        if (this.props.type === "login"){
-            this.checkLoginData()
+        if (this.props.type === "register" && dataValid) {
+            this.register();
+        }
+        else if (this.props.type === "login" && dataValid) {
+            
         }
     }
 
-    checkLoginData(){
+    checkLoginData() {
         let username = this.refs.username.value;
         let password = this.refs.password.value;
-        let loginData = md5(username+password);
+        let loginData = md5(username + password);
         console.log(loginData);
+    }
+
+    register() {
+        let username = this.refs.username.value;
+        let password = this.refs.password.value;
+        let registerData = md5(username + password);
+        fetch("/register", {
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ md5: registerData, username: username })
+        })
+            .then(res => res.json())
+            .then((res) =>{
+                console.log(res)
+                if (res.status === 'success'){
+                    this.setState({message: "Registration success!", messageType: "success"})
+                }else {
+                    this.setState({message: "This user already exists!", messageType: "error"})
+                }
+            });
+    }
+
+    showMessage(){
+        if (this.state.message !== ""){
+            return (
+                <div className={"EnterTab__" + this.state.messageType}>
+                    {this.state.message}
+                </div>
+            )
+        }
     }
 
     render() {
@@ -69,21 +104,18 @@ export class EnterTab extends React.Component {
                         placeholder="Your password"
                         onBlur={e => this.validateOnBlur(e)}
                     />
-                    <button
-                        onClick={this.validateOnSubmit}
-                        class="EnterTab__button"
-                    >
+                    <button onClick={this.validateOnSubmit} class="EnterTab__button">
                         Login!
                     </button>
-                    <div className="EnterTab__error" hidden>Please check input data!</div>
+                    <div className="EnterTab__error" hidden>
+                        Please check input data!
+                    </div>
                 </div>
             );
         } else if (this.props.type === "register") {
             return (
                 <div className="EnterTab">
-                    <h2 className="EnterTab__title">
-                        Create new user. Email is not needed!
-                    </h2>
+                    <h2 className="EnterTab__title">Create new user. Email is not needed!</h2>
                     <input
                         type="username"
                         ref="username"
@@ -100,13 +132,10 @@ export class EnterTab extends React.Component {
                         placeholder="Your password"
                         onBlur={e => this.validateOnBlur(e)}
                     />
-                    <button
-                        onClick={this.validateOnSubmit}
-                        className="EnterTab__button"
-                    >
+                    <button onClick={this.validateOnSubmit} className="EnterTab__button">
                         Create!
                     </button>
-                    <div className="EnterTab__error" hidden>Please check input data!</div>
+                    {this.showMessage()}
                 </div>
             );
         }
