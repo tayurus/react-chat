@@ -42,7 +42,7 @@ export class EnterTab extends React.Component {
             this.register();
         }
         else if (this.props.type === "login" && dataValid) {
-            
+            this.checkLoginData();
         }
     }
 
@@ -50,7 +50,21 @@ export class EnterTab extends React.Component {
         let username = this.refs.username.value;
         let password = this.refs.password.value;
         let loginData = md5(username + password);
-        console.log(loginData);
+        fetch("/login", {
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({md5: loginData})
+        })
+            .then(res => res.json())
+            .then((res) =>{
+                console.log(res)
+                if (res.status === 'success'){
+                    this.setState({message: "Enter success!", messageType: "success"});
+                    this.props.login()
+                }else {
+                    this.setState({message: "This user does not exist!", messageType: "error"})
+                }
+            });
     }
 
     register() {
@@ -107,9 +121,7 @@ export class EnterTab extends React.Component {
                     <button onClick={this.validateOnSubmit} class="EnterTab__button">
                         Login!
                     </button>
-                    <div className="EnterTab__error" hidden>
-                        Please check input data!
-                    </div>
+                    {this.showMessage()}
                 </div>
             );
         } else if (this.props.type === "register") {

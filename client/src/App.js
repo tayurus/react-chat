@@ -11,6 +11,7 @@ class App extends Component {
         super(props);
         this.searchUsers = this.searchUsers.bind(this);
         this.showDialog = this.showDialog.bind(this);
+        this.login = this.login.bind(this);
         this.state = { loaded: false, logged: false };
     }
 
@@ -38,10 +39,7 @@ class App extends Component {
     searchUsers(phrase) {
         let state = this.state;
         state.dialogs = state.dialogs.map(dialog => {
-            if (
-                dialog.username.toLowerCase().indexOf(phrase.toLowerCase()) !==
-                -1
-            ) {
+            if (dialog.username.toLowerCase().indexOf(phrase.toLowerCase()) !== -1) {
                 return { ...dialog, visible: true };
             } else {
                 return { ...dialog, visible: false };
@@ -51,56 +49,41 @@ class App extends Component {
         this.setState(state);
     }
 
-    render() {
-        return (
-            <HashRouter>
-                <div class="App">
-                    <header className="App__header">
-                        <NavLink
-                            activeStyle={{ color: "tomato" }}
-                            className="App__header-link"
-                            to="/login"
-                        >
-                            Login
-                        </NavLink>
-                        <NavLink
-                            activeStyle={{ color: "tomato" }}
-                            className="App__header-link"
-                            to="/register"
-                        >
-                            Register
-                        </NavLink>
-                    </header>
-                    <Route
-                        path="/login"
-                        render={router => <EnterTab type="login" />}
-                    />
-                    <Route
-                        path="/register"
-                        render={router => <EnterTab type="register" />}
-                    />
-                </div>
-            </HashRouter>
-        );
+    login(){
+        this.setState({logged: true})
+    }
 
-        {
-            /*if (!this.state.loaded) {
-      return <div>Loading...</div>;
-    } else {
-      return (
-        <div className="App">
-          <div className="App__wrapper">
-            <UsersTable
-              searchUsers={this.searchUsers}
-              dialogs={this.state.dialogs}
-              showDialog={this.showDialog}
-            />
-            <MessageTable
-              dialog={this.state.dialogs[this.state.currentDialog]}
-            />
-          </div>
-        </div>
-      );*/
+    render() {
+        if (!this.state.logged) {
+            return (
+                <HashRouter>
+                    <div class="App">
+                        <header className="App__header">
+                            <NavLink activeStyle={{ color: "tomato" }} className="App__header-link" to="/login">
+                                Login
+                            </NavLink>
+                            <NavLink activeStyle={{ color: "tomato" }} className="App__header-link" to="/register">
+                                Register
+                            </NavLink>
+                        </header>
+                        <Route path="/login" render={router => <EnterTab type="login" login={this.login}/>} />
+                        <Route path="/register" render={router => <EnterTab type="register" />} />
+                    </div>
+                </HashRouter>
+            );
+        } else {
+            if (!this.state.loaded) {
+                return (<div>Loading...</div>);
+            } else {
+                return (
+                    <div className="App">
+                        <div className="App__wrapper">
+                            <UsersTable searchUsers={this.searchUsers} dialogs={this.state.dialogs} showDialog={this.showDialog} />
+                            <MessageTable dialog={this.state.dialogs[this.state.currentDialog]} />
+                        </div>
+                    </div>
+                );
+            }
         }
     }
 }

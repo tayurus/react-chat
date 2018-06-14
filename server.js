@@ -66,12 +66,19 @@ app.get('/users', (req, res) => {
 });
 
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
-// REGISTRATION
+app.post("/login", function(req, res){
+    console.log("LOGIN!");
+    if (isUserExist(req.body.md5)){
+        res.send({status: "success"});
+    }
+    else {
+        res.send({status: "fail"});
+    }
+})
+
 app.post("/register", function(req, res){
-    console.log(users);
     if (registerUser(req.body.md5, req.body.username)){
         res.send({status: "success"});
     }else {
@@ -79,14 +86,10 @@ app.post("/register", function(req, res){
     }
 });
 
+
+
 function registerUser(md5,username){
-    let success = true;
-    //check if user with same md5 exists
-    users.forEach(function(user) {
-        if (user.md5 === md5){
-            success = false;
-        }
-    });
+    let success = !isUserExist(md5);
 
     if (success){
         let newUser = {
@@ -97,3 +100,17 @@ function registerUser(md5,username){
     }
     return success;
 }
+
+function isUserExist(md5){
+    let exist = false;
+    //check if user with same md5 exists
+    users.forEach(function(user) {
+        if (user.md5 === md5){
+            exist = true;
+        }
+    });
+
+    return exist;
+}
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
