@@ -36,7 +36,7 @@ export class MessageTable extends React.Component{
                     })}
                 </div>
 
-                <MessageControls/>
+                <MessageControls sendMessage={this.props.sendMessage}/>
             </div>
         )
     }

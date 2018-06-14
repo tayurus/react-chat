@@ -16,9 +16,16 @@ webSocketServer.on("connection", function(ws) {
     clients[clientId] = ws;
     ws.on("message", function(message) {
         let messageData = JSON.parse(message);
+        //if user needs to get his current state
         if (messageData.objective === "getState") {
-            clients[clientId].md5 = messageData.md5;
-            clients[clientId].send(JSON.stringify(getUserStateByMd5(clients[clientId].md5)));
+            let user = getUserStateByMd5(clients[clientId].md5);
+            // we need set relationship between user's id and his WebSocket's clientId for sending message etc.
+            clients[clientId].id = user.id;
+            clients[clientId].send(JSON.stringify(user));
+        }
+        //if user needs to send a message to someone
+        if (messageData.objective === "sendMessage"){
+            
         }
     });
 
@@ -30,48 +37,41 @@ webSocketServer.on("connection", function(ws) {
 
 var users = [
     {
-        username: "User",
+        id: 0,
+        username: "User1",
+        md5: "ccb1d796661ea9dc6f7886e0c411df71",
+        currentDialog: 0,
+        dialogs: [
+            {
+                id: 1,
+                username: "User2",
+                status: "online",
+                visible: true,
+                messagesHistory: [
+                    {
+                        type: "outgoing",
+                        text: "Yo bro!",
+                        date: new Date()
+                    }
+                ]
+            }
+        ]
+    }
+    {
+        id: 1,
+        username: "User2",
         md5: "ccb1d796661ea9dc6f7886e0c411df71",
         currentDialog: 0,
         dialogs: [
             {
                 id: 0,
-                username: "Yura",
+                username: "User1",
                 status: "online",
                 visible: true,
                 messagesHistory: [
                     {
                         type: "incoming",
                         text: "Yo bro!",
-                        date: new Date()
-                    },
-                    {
-                        type: "outgoing",
-                        text: "What do you want!?What do you want!?What do you want!?What do you want!?",
-                        date: new Date()
-                    }
-                ]
-            },
-
-            {
-                id: 1,
-                username: "Sasha",
-                status: "offline",
-                visible: true,
-                messagesHistory: [
-                    {
-                        type: "outgoing",
-                        text: "May i have a momemnt of your time?",
-                        date: new Date()
-                    },
-                    {
-                        type: "incoming",
-                        text: "What do you want!?",
-                        date: new Date()
-                    },
-                    {
-                        type: "incoming emoji",
-                        text: "sup",
                         date: new Date()
                     }
                 ]
@@ -81,7 +81,6 @@ var users = [
 ];
 
 app.post("/login", function(req, res) {
-    console.log("LOGIN!");
     if (isUserExist(req.body.md5)) {
         res.send({ status: "success" });
     } else {

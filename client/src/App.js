@@ -7,7 +7,6 @@ import { EnterTab } from "./Components/EnterTab/EnterTab";
 import { HashRouter, Route, NavLink } from "react-router-dom";
 
 class App extends Component {
-
     socket = "";
 
     constructor(props) {
@@ -31,7 +30,10 @@ class App extends Component {
         let state = this.state;
         state.dialogs = state.dialogs.map(dialog => {
             //searching for the pharse (ignoring case)
-            if (dialog.username.toLowerCase().indexOf(phrase.toLowerCase()) !== -1) {
+            if (
+                dialog.username.toLowerCase().indexOf(phrase.toLowerCase()) !==
+                -1
+            ) {
                 return { ...dialog, visible: true };
             } else {
                 return { ...dialog, visible: false };
@@ -48,7 +50,10 @@ class App extends Component {
 
         //All next operations between user and server will use WebSockets
         this.socket = new WebSocket("ws://localhost:5001");
-        this.socket.onopen = () => this.socket.send(JSON.stringify({ objective: "getState", md5: md5 }));
+        this.socket.onopen = () =>
+            this.socket.send(
+                JSON.stringify({ objective: "getState", md5: md5 })
+            );
         this.socket.onmessage = message => {
             let state = JSON.parse(message.data);
             //to show UI, we change "loaded-field" to true
@@ -57,33 +62,68 @@ class App extends Component {
         };
     }
 
+    //Sends message(text) to user(id)
+    sendMessage(text) {
+        let message = {
+            objective: "sendMessage",
+            text: text,
+            id: this.state.currentDialog // recepient's id
+        };
+        this.socket.send(JSON.stringify(message));
+    }
+
     render() {
         if (!this.state.logged) {
             return (
                 <HashRouter>
                     <div class="App">
                         <header className="App__header">
-                            <NavLink activeStyle={{ color: "tomato" }} className="App__header-link" to="/login">
+                            <NavLink
+                                activeStyle={{ color: "tomato" }}
+                                className="App__header-link"
+                                to="/login"
+                            >
                                 Login
                             </NavLink>
-                            <NavLink activeStyle={{ color: "tomato" }} className="App__header-link" to="/register">
+                            <NavLink
+                                activeStyle={{ color: "tomato" }}
+                                className="App__header-link"
+                                to="/register"
+                            >
                                 Register
                             </NavLink>
                         </header>
-                        <Route path="/login" render={router => <EnterTab type="login" login={this.login} />} />
-                        <Route path="/register" render={router => <EnterTab type="register" />} />
+                        <Route
+                            path="/login"
+                            render={router => (
+                                <EnterTab type="login" login={this.login} />
+                            )}
+                        />
+                        <Route
+                            path="/register"
+                            render={router => <EnterTab type="register" />}
+                        />
                     </div>
                 </HashRouter>
             );
         } else {
             if (!this.state.loaded) {
-                return (<div>Loading...</div>);
+                return <div>Loading...</div>;
             } else {
                 return (
                     <div className="App">
                         <div className="App__wrapper">
-                            <UsersTable searchUsers={this.searchUsers} dialogs={this.state.dialogs} showDialog={this.showDialog} />
-                            <MessageTable dialog={this.state.dialogs[this.state.currentDialog]} />
+                            <UsersTable
+                                searchUsers={this.searchUsers}
+                                dialogs={this.state.dialogs}
+                                showDialog={this.showDialog}
+                            />
+                            <MessageTable
+                                sendMessage={this.sendMessage}
+                                dialog={
+                                    this.state.dialogs[this.state.currentDialog]
+                                }
+                            />
                         </div>
                     </div>
                 );

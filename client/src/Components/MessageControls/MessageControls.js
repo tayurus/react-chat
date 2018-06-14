@@ -13,7 +13,11 @@ export class MessageControls extends React.Component {
                     <input type="file" />
                 </label>
 
-                <textarea className="message-controls__message-input" placeholder="Type your message..." />
+                <textarea
+                    ref="message"
+                    className="message-controls__message-input"
+                    placeholder="Type your message..."
+                />
 
                 <div className="message-controls__emojis-wrapper">
                     <div className="message-controls__emojis" />
@@ -27,7 +31,10 @@ export class MessageControls extends React.Component {
                     </div>
                 </div>
 
-                <button className="message-controls__send" />
+                <button
+                    className="message-controls__send"
+                    onClick={() => this.props.sendMessage(this.refs.message)}
+                />
             </div>
         );
     }
