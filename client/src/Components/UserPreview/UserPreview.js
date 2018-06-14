@@ -3,9 +3,6 @@ import "./UserPreview.css";
 let pidor = require("./img/pidor.png");
 
 export class UserPreview extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (

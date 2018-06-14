@@ -49,18 +49,17 @@ export class EnterTab extends React.Component {
     checkLoginData() {
         let username = this.refs.username.value;
         let password = this.refs.password.value;
-        let loginData = md5(username + password);
+        let md5Data = md5(username + password);
         fetch("/login", {
             method: "post",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({md5: loginData})
+            body: JSON.stringify({md5: md5Data})
         })
             .then(res => res.json())
             .then((res) =>{
-                console.log(res)
                 if (res.status === 'success'){
                     this.setState({message: "Enter success!", messageType: "success"});
-                    this.props.login()
+                    this.props.login(md5Data)
                 }else {
                     this.setState({message: "This user does not exist!", messageType: "error"})
                 }
@@ -78,7 +77,6 @@ export class EnterTab extends React.Component {
         })
             .then(res => res.json())
             .then((res) =>{
-                console.log(res)
                 if (res.status === 'success'){
                     this.setState({message: "Registration success!", messageType: "success"})
                 }else {

@@ -7,38 +7,30 @@ import { EnterTab } from "./Components/EnterTab/EnterTab";
 import { HashRouter, Route, NavLink } from "react-router-dom";
 
 class App extends Component {
+
+    socket = "";
+
     constructor(props) {
         super(props);
+        // binding methods
         this.searchUsers = this.searchUsers.bind(this);
         this.showDialog = this.showDialog.bind(this);
         this.login = this.login.bind(this);
+
+        // setting start state
         this.state = { loaded: false, logged: false };
     }
 
-    componentWillMount() {
-        this.callApi()
-            .then(res => {
-                res.loaded = true;
-                this.setState(res);
-            })
-            .catch(err => console.log(err));
-    }
-
-    callApi = async () => {
-        const response = await fetch("/users");
-        const body = await response.json();
-
-        if (response.status !== 200) throw Error(body.message);
-        return body;
-    };
-
+    // just change current dialog index state
     showDialog(id) {
         this.setState({ currentDialog: id });
     }
 
+    // goes across all users and hide users, which does not contain search-pharse
     searchUsers(phrase) {
         let state = this.state;
         state.dialogs = state.dialogs.map(dialog => {
+            //searching for the pharse (ignoring case)
             if (dialog.username.toLowerCase().indexOf(phrase.toLowerCase()) !== -1) {
                 return { ...dialog, visible: true };
             } else {
@@ -49,8 +41,20 @@ class App extends Component {
         this.setState(state);
     }
 
-    login(){
-        this.setState({logged: true})
+    //Sends User's md5 (this functions will execute only after EnterTab-component checks that user exists)
+    login(md5) {
+        //to show user chat-window, we should change the state
+        this.setState({ logged: true });
+
+        //All next operations between user and server will use WebSockets
+        this.socket = new WebSocket("ws://localhost:5001");
+        this.socket.onopen = () => this.socket.send(JSON.stringify({ objective: "getState", md5: md5 }));
+        this.socket.onmessage = message => {
+            let state = JSON.parse(message.data);
+            //to show UI, we change "loaded-field" to true
+            state.loaded = true;
+            this.setState(state);
+        };
     }
 
     render() {
@@ -66,7 +70,7 @@ class App extends Component {
                                 Register
                             </NavLink>
                         </header>
-                        <Route path="/login" render={router => <EnterTab type="login" login={this.login}/>} />
+                        <Route path="/login" render={router => <EnterTab type="login" login={this.login} />} />
                         <Route path="/register" render={router => <EnterTab type="register" />} />
                     </div>
                 </HashRouter>
