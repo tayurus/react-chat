@@ -2,7 +2,7 @@
   "name": "react-chat",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000/",
+  "proxy": "http://192.168.26.238:5000/",
   "dependencies": {
     "md5": "^2.2.1",
     "react": "^16.4.0",

@@ -19,7 +19,7 @@ const formatDate = (date) => {
 export const Message = props => {
     if (props.type.indexOf('emoji') !== -1){
         return(
-            <div className={"message message_" + props.type + "__" + props.text }>
+            <div className={"message " + props.type + "__" + props.text }>
                 <div className="message__date">{formatDate(new Date(props.date))}</div>
             </div>
         )

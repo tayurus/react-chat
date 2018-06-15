@@ -51,7 +51,7 @@ class App extends Component {
         this.setState({ logged: true });
 
         //All next operations between user and server will use WebSockets
-        this.socket = new WebSocket("ws://localhost:5001");
+        this.socket = new WebSocket("ws://192.168.26.238:5001");
         this.socket.onopen = () =>
             this.socket.send(
                 JSON.stringify({ objective: "getState", md5: md5 })
@@ -66,10 +66,11 @@ class App extends Component {
     }
 
     //Sends message(text) to user(id)
-    sendMessage(text) {
+    sendMessage(text, type) {
         let message = {
             objective: "sendMessage",
             text: text,
+            type: type,
             id: this.state.currentDialog // recepient's id
         };
         console.log("SOCKET IS ", this.socket);
@@ -134,12 +135,13 @@ class App extends Component {
                                 dialogs={this.state.dialogs}
                                 showDialog={this.showDialog}
                             />
-                            <MessageTable
+                            {this.state.dialogs.length > 0 ? <MessageTable
                                 sendMessage={this.sendMessage}
                                 dialog={
                                     this.state.dialogs[this.getDialogIndexByField("id",this.state.currentDialog)]
                                 }
-                            />
+                            /> : ""}  
+
                         </div>
                     </div>
                 );

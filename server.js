@@ -35,6 +35,7 @@ webSocketServer.on("connection", function(ws) {
             sender['dialogs'][senderDialogIndex].messagesHistory.push({
                 type : "outgoing",
                 text: messageData.text,
+                type: messageData.type,
                 date: new Date()
             });
 
@@ -47,6 +48,7 @@ webSocketServer.on("connection", function(ws) {
             recepient['dialogs'][recepientDialogIndex].messagesHistory.push({
                 type : "incoming",
                 text: messageData.text,
+                type: messageData.type,
                 date: new Date()
             });
 
@@ -69,45 +71,10 @@ webSocketServer.on("connection", function(ws) {
 var users = [
     {
         id: 0,
-        username: "User1",
-        md5: "50b92537095361fbfc94812b625d2ea3",
-        currentDialog: 1,
-        dialogs: [
-            {
-                id: 1,
-                username: "User2",
-                status: "online",
-                visible: true,
-                messagesHistory: [
-                    {
-                        type: "outgoing",
-                        text: "Yo bro!",
-                        date: new Date()
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id: 1,
-        username: "User2",
-        md5: "c0eb83af2ffa88dfe88319652007d7aa",
-        currentDialog: 0,
-        dialogs: [
-            {
-                id: 0,
-                username: "User1",
-                status: "online",
-                visible: true,
-                messagesHistory: [
-                    {
-                        type: "incoming",
-                        text: "Yo bro!",
-                        date: new Date()
-                    }
-                ]
-            }
-        ]
+        username: "ChatCreator",
+        md5: "1215a5c581427689ba073f9566216c6f",
+        currentDialog: -1,
+        dialogs: []
     }
 ];
 
@@ -120,36 +87,23 @@ app.post("/login", function(req, res) {
 });
 
 app.post("/register", function(req, res) {
-    if (registerUser(req.body.md5, req.body.username)) {
+    if (registerUser(req.body.md5, req.body.username, maxClientId)) {
         res.send({ status: "success" });
     } else {
         res.send({ status: "fail" });
     }
 });
 
-function registerUser(md5, username) {
+function registerUser(md5, username, id) {
     let success = !isUserExist(md5);
 
     if (success) {
         let newUser = {
+            id: id,
             username: username,
             md5: md5,
             currentDialog: 0,
-            dialogs: [
-                {
-                    id: 0,
-                    username: "Chat Creator",
-                    status: "online",
-                    visible: true,
-                    messagesHistory: [
-                        {
-                            type: "incoming",
-                            text: "Yo bro!",
-                            date: new Date()
-                        }
-                    ]
-                }
-            ]
+            dialogs: []
         };
         users.push(newUser);
     }
