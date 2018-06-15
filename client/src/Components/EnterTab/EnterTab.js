@@ -107,7 +107,7 @@ export class EnterTab extends React.Component {
                         className="EnterTab__field"
                         placeholder="Your nickname"
                         onBlur={e => this.validateOnBlur(e)}
-                        defaultValue="User1"
+                        defaultValue="ChatCreator"
                     />
                     <input
                         type="password"

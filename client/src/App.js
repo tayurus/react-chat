@@ -32,10 +32,7 @@ class App extends Component {
         let state = this.state;
         state.dialogs = state.dialogs.map(dialog => {
             //searching for the pharse (ignoring case)
-            if (
-                dialog.username.toLowerCase().indexOf(phrase.toLowerCase()) !==
-                -1
-            ) {
+            if (dialog.username.toLowerCase().indexOf(phrase.toLowerCase()) !== -1) {
                 return { ...dialog, visible: true };
             } else {
                 return { ...dialog, visible: false };
@@ -52,10 +49,7 @@ class App extends Component {
 
         //All next operations between user and server will use WebSockets
         this.socket = new WebSocket("ws://192.168.26.238:5001");
-        this.socket.onopen = () =>
-            this.socket.send(
-                JSON.stringify({ objective: "getState", md5: md5 })
-            );
+        this.socket.onopen = () => this.socket.send(JSON.stringify({ objective: "getState", md5: md5 }));
         this.socket.onmessage = message => {
             let state = JSON.parse(message.data);
             //to show UI, we change "loaded-field" to true
@@ -77,8 +71,7 @@ class App extends Component {
         this.socket.send(JSON.stringify(message));
     }
 
-    getDialogIndexByField(fieldName, value){
-        console.log("fieldName = " + fieldName + " value = " + value);
+    getDialogIndexByField(fieldName, value) {
         let res;
         this.state.dialogs.forEach(function(dialog, index) {
             if (dialog[fieldName] === value) {
@@ -95,31 +88,15 @@ class App extends Component {
                 <HashRouter>
                     <div class="App">
                         <header className="App__header">
-                            <NavLink
-                                activeStyle={{ color: "tomato" }}
-                                className="App__header-link"
-                                to="/login"
-                            >
+                            <NavLink activeStyle={{ color: "tomato" }} className="App__header-link" to="/login">
                                 Login
                             </NavLink>
-                            <NavLink
-                                activeStyle={{ color: "tomato" }}
-                                className="App__header-link"
-                                to="/register"
-                            >
+                            <NavLink activeStyle={{ color: "tomato" }} className="App__header-link" to="/register">
                                 Register
                             </NavLink>
                         </header>
-                        <Route
-                            path="/login"
-                            render={router => (
-                                <EnterTab type="login" login={this.login} />
-                            )}
-                        />
-                        <Route
-                            path="/register"
-                            render={router => <EnterTab type="register" />}
-                        />
+                        <Route path="/login" render={router => <EnterTab type="login" login={this.login} />} />
+                        <Route path="/register" render={router => <EnterTab type="register" />} />
                     </div>
                 </HashRouter>
             );
@@ -130,18 +107,15 @@ class App extends Component {
                 return (
                     <div className="App">
                         <div className="App__wrapper">
-                            <UsersTable
-                                searchUsers={this.searchUsers}
-                                dialogs={this.state.dialogs}
-                                showDialog={this.showDialog}
-                            />
-                            {this.state.dialogs.length > 0 ? <MessageTable
-                                sendMessage={this.sendMessage}
-                                dialog={
-                                    this.state.dialogs[this.getDialogIndexByField("id",this.state.currentDialog)]
-                                }
-                            /> : ""}  
-
+                            <UsersTable searchUsers={this.searchUsers} dialogs={this.state.dialogs} showDialog={this.showDialog} />
+                            {this.state.dialogs.length > 0 ? (
+                                <MessageTable
+                                    sendMessage={this.sendMessage}
+                                    dialog={this.state.dialogs[this.getDialogIndexByField("id", this.state.currentDialog)]}
+                                />
+                            ) : (
+                                ""
+                            )}
                         </div>
                     </div>
                 );
