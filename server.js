@@ -7,25 +7,56 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const port = process.env.PORT || 5000;
 
-let clients = {};
+let clients = [];
 let maxClientId = 0;
 
 
 webSocketServer.on("connection", function(ws) {
-    clientId = maxClientId;
+    clientId = maxClientId++;
+    ws.id = clientId;
     clients[clientId] = ws;
     ws.on("message", function(message) {
         let messageData = JSON.parse(message);
+        console.log("INCOMING! OBJECTIVE = " +messageData.objective);
         //if user needs to get his current state
         if (messageData.objective === "getState") {
-            let user = getUserStateByMd5(clients[clientId].md5);
+            let user = getUserStateByField("md5", messageData.md5);
+            console.log("NEW USER CONNECTED! HIS ID = " + user.id);
             // we need set relationship between user's id and his WebSocket's clientId for sending message etc.
-            clients[clientId].id = user.id;
-            clients[clientId].send(JSON.stringify(user));
+            ws.id = user.id;
+            ws.send(JSON.stringify(user));
         }
         //if user needs to send a message to someone
         if (messageData.objective === "sendMessage"){
-            
+            console.log("NEW MESSAGE FROM USER with clientID" + ws.id + " TO USER " + messageData.id);
+            //get sender's state and write his message to it
+            let sender = getUserStateByField("id", ws.id);
+            let senderDialogIndex = getDialogIndexByField(sender, "id",  messageData.id);
+            sender['dialogs'][senderDialogIndex].messagesHistory.push({
+                type : "outgoing",
+                text: messageData.text,
+                date: new Date()
+            });
+
+            updateUser(sender);
+            console.log("SENDER dialogs WAS UPDATED ", sender.dialogs[0].messagesHistory);
+
+            //get recepient's state and write new message to it
+            let recepient = getUserStateByField("id", messageData.id);
+            let recepientDialogIndex = getDialogIndexByField(recepient, "id", ws.id);
+            recepient['dialogs'][recepientDialogIndex].messagesHistory.push({
+                type : "incoming",
+                text: messageData.text,
+                date: new Date()
+            });
+
+            updateUser(recepient);
+            console.log("RECEPIENT dialogs WAS UPDATED ", recepient.dialogs[0].messagesHistory);
+
+            // send new states to both users
+            ws.send(JSON.stringify(sender));
+            let recepientSocket = getWebSocketUserById(messageData.id);
+            recepientSocket.send(JSON.stringify(recepient));
         }
     });
 
@@ -39,8 +70,8 @@ var users = [
     {
         id: 0,
         username: "User1",
-        md5: "ccb1d796661ea9dc6f7886e0c411df71",
-        currentDialog: 0,
+        md5: "50b92537095361fbfc94812b625d2ea3",
+        currentDialog: 1,
         dialogs: [
             {
                 id: 1,
@@ -56,11 +87,11 @@ var users = [
                 ]
             }
         ]
-    }
+    },
     {
         id: 1,
         username: "User2",
-        md5: "ccb1d796661ea9dc6f7886e0c411df71",
+        md5: "c0eb83af2ffa88dfe88319652007d7aa",
         currentDialog: 0,
         dialogs: [
             {
@@ -137,15 +168,48 @@ function isUserExist(md5) {
     return exist;
 }
 
-function getUserStateByMd5(md5) {
+function getUserStateByField(fieldName, value) {
     let res;
     users.forEach(function(user) {
-        if (user.md5 === md5) {
+        if (user[fieldName] === value) {
             res = user;
         }
     });
 
     return res;
 }
+
+function getDialogIndexByField(user, fieldName, value){
+    let res;
+    user.dialogs.forEach(function(dialog, index) {
+        if (dialog[fieldName] === value) {
+            res = index;
+        }
+    });
+
+    return res;
+}
+
+function updateUser(user){
+    //search user in users-array and remove it
+    let newUsers = users.filter(function(currentUser){
+        return (currentUser.id !== user.id)
+    });
+
+    newUsers.push(user);
+
+    users = newUsers;
+}
+
+function getWebSocketUserById(id){
+    let res;
+    clients.forEach(function (connection) {
+        if (connection.id === id)
+            res = connection
+    });
+
+    return res;
+}
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

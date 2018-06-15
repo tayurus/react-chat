@@ -33,7 +33,7 @@ export class MessageControls extends React.Component {
 
                 <button
                     className="message-controls__send"
-                    onClick={() => this.props.sendMessage(this.refs.message)}
+                    onClick={() => this.props.sendMessage(this.refs.message.value)}
                 />
             </div>
         );

@@ -15,6 +15,8 @@ class App extends Component {
         this.searchUsers = this.searchUsers.bind(this);
         this.showDialog = this.showDialog.bind(this);
         this.login = this.login.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
+        this.getDialogIndexByField = this.getDialogIndexByField.bind(this);
 
         // setting start state
         this.state = { loaded: false, logged: false };
@@ -58,6 +60,7 @@ class App extends Component {
             let state = JSON.parse(message.data);
             //to show UI, we change "loaded-field" to true
             state.loaded = true;
+            console.log("NEW STATE!!!", state);
             this.setState(state);
         };
     }
@@ -69,7 +72,20 @@ class App extends Component {
             text: text,
             id: this.state.currentDialog // recepient's id
         };
+        console.log("SOCKET IS ", this.socket);
         this.socket.send(JSON.stringify(message));
+    }
+
+    getDialogIndexByField(fieldName, value){
+        console.log("fieldName = " + fieldName + " value = " + value);
+        let res;
+        this.state.dialogs.forEach(function(dialog, index) {
+            if (dialog[fieldName] === value) {
+                res = index;
+            }
+        });
+
+        return res;
     }
 
     render() {
@@ -108,7 +124,7 @@ class App extends Component {
             );
         } else {
             if (!this.state.loaded) {
-                return <div>Loading...</div>;
+                return (<div>Loading...</div>);
             } else {
                 return (
                     <div className="App">
@@ -121,7 +137,7 @@ class App extends Component {
                             <MessageTable
                                 sendMessage={this.sendMessage}
                                 dialog={
-                                    this.state.dialogs[this.state.currentDialog]
+                                    this.state.dialogs[this.getDialogIndexByField("id",this.state.currentDialog)]
                                 }
                             />
                         </div>
