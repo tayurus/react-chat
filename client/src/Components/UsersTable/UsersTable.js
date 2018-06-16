@@ -12,7 +12,8 @@ export class UsersTable extends React.Component{
         this.setState({currentTab: tab});
     }
 
-    render(){console.log(this.props);
+    render(){
+
         return (
             <div className="users-table">
                 <SearchInput searchUsers={this.props.searchUsers}/>
@@ -36,7 +37,12 @@ export class UsersTable extends React.Component{
                                 />)
                             })
                     :
-                    <div/>
+                    this.props.users.map(function(user){
+                        return (<UserPreview status={user.status}
+                                             username={user.username}
+                                             id={user.id}
+                                />)
+                            })
 
                 }
             </div>

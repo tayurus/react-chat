@@ -107,7 +107,7 @@ class App extends Component {
                 return (
                     <div className="App">
                         <div className="App__wrapper">
-                            <UsersTable searchUsers={this.searchUsers} dialogs={this.state.dialogs} showDialog={this.showDialog} />
+                            <UsersTable users = {this.state.users} searchUsers={this.searchUsers} dialogs={this.state.dialogs} showDialog={this.showDialog} />
                             {this.state.dialogs.length > 0 ? (
                                 <MessageTable
                                     sendMessage={this.sendMessage}

@@ -11,6 +11,30 @@ let clients = [];
 let maxClientId = 0;
 
 
+var users = [
+    {
+        id: 0,
+        username: "ChatCreator",
+        md5: "1215a5c581427689ba073f9566216c6f",
+        currentDialog: 1,
+        dialogs: [
+           {
+               id: 1,
+               username: "User2",
+               status: "online",
+               visible: true,
+               messagesHistory: [
+                   {
+                       type: "outgoing",
+                       text: "Yo bro!",
+                       date: new Date()
+                   }
+               ]
+           }
+       ]
+    }
+];
+
 webSocketServer.on("connection", function(ws) {
     clientId = maxClientId++;
     ws.id = clientId;
@@ -20,7 +44,8 @@ webSocketServer.on("connection", function(ws) {
         console.log("INCOMING! OBJECTIVE = " +messageData.objective);
         //if user needs to get his current state
         if (messageData.objective === "getState") {
-            let user = getUserStateByField("md5", messageData.md5);
+            let user =JSON.parse(JSON.stringify(getUserStateByField("md5", messageData.md5)));
+            user.users = users;
             console.log("NEW USER CONNECTED! HIS ID = " + user.id);
             // we need set relationship between user's id and his WebSocket's clientId for sending message etc.
             ws.id = user.id;
@@ -67,30 +92,6 @@ webSocketServer.on("connection", function(ws) {
     });
 });
 
-
-var users = [
-    {
-        id: 0,
-        username: "ChatCreator",
-        md5: "1215a5c581427689ba073f9566216c6f",
-        currentDialog: 1,
-        dialogs: [
-           {
-               id: 1,
-               username: "User2",
-               status: "online",
-               visible: true,
-               messagesHistory: [
-                   {
-                       type: "outgoing",
-                       text: "Yo bro!",
-                       date: new Date()
-                   }
-               ]
-           }
-       ]
-    }
-];
 
 app.post("/login", function(req, res) {
     if (isUserExist(req.body.md5)) {
