@@ -73,8 +73,22 @@ var users = [
         id: 0,
         username: "ChatCreator",
         md5: "1215a5c581427689ba073f9566216c6f",
-        currentDialog: -1,
-        dialogs: []
+        currentDialog: 1,
+        dialogs: [
+           {
+               id: 1,
+               username: "User2",
+               status: "online",
+               visible: true,
+               messagesHistory: [
+                   {
+                       type: "outgoing",
+                       text: "Yo bro!",
+                       date: new Date()
+                   }
+               ]
+           }
+       ]
     }
 ];
 

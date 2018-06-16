@@ -1,11 +1,12 @@
 .user-preview{
-    max-width: 373px;
+    max-width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     padding: 25px 0px;
     margin: 0px 25px;
+    position: relative;
 }
 
 
@@ -35,7 +36,7 @@
 }
 
 .user-preview__info{
-    width: 251px;
+    width: 100%;
 }
 
 .user-preview__name{
@@ -55,10 +56,34 @@
     white-space: nowrap;
 }
 
+.user-preview__unread-count{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5%;
+    display: flex;
+    border-radius: 100%;
+    background-color: #fe201a;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    font-family: "Roboto";
+}
+
 @media (max-width:910px),(max-device-width:910px) {
     .user-preview {
         padding: 10px 0px;
         margin: 0px 10px;
+    }
+
+    .user-preview__unread-count{
+        width: 26px;
+        height: 26px;
+        top: 15px;
+        right: -3px;
+        transform: none;
     }
 }
 
@@ -81,5 +106,12 @@
         width: 15px;
         height: 16px;
         background: #2ecb70 url('img/statusOnline.png') no-repeat center / 9px 7px;
+    }
+
+    .user-preview__unread-count{
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+        right: -5px;
     }
 }

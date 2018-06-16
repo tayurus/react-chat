@@ -20,6 +20,7 @@ export class UserPreview extends React.Component {
         <div className="user-preview__info">
           <div className="user-preview__name">{this.props.username}</div>
           <div className="user-preview__text">{this.props.text}</div>
+          <div className="user-preview__unread-count">1</div>
         </div>
       </div>
     );

@@ -48,7 +48,7 @@ class App extends Component {
         this.setState({ logged: true });
 
         //All next operations between user and server will use WebSockets
-        this.socket = new WebSocket("ws://192.168.26.238:5001");
+        this.socket = new WebSocket("ws://localhost:5001");
         this.socket.onopen = () => this.socket.send(JSON.stringify({ objective: "getState", md5: md5 }));
         this.socket.onmessage = message => {
             let state = JSON.parse(message.data);
