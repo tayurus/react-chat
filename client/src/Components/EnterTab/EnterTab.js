@@ -135,6 +135,7 @@ export class EnterTab extends React.Component {
                         className="EnterTab__field"
                         placeholder="Your nickname"
                         onBlur={e => this.validateOnBlur(e)}
+                        defaultValue="TestUser"
                     />
                     <input
                         type="password"
@@ -143,6 +144,7 @@ export class EnterTab extends React.Component {
                         className="EnterTab__field"
                         placeholder="Your password"
                         onBlur={e => this.validateOnBlur(e)}
+                        defaultValue="12345678"
                     />
                     <button onClick={this.validateOnSubmit} className="EnterTab__button">
                         Create!

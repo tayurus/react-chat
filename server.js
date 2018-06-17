@@ -37,23 +37,25 @@ var users = [
 
 webSocketServer.on("connection", function(ws) {
     clientId = maxClientId++;
-    ws.id = clientId;
-    clients[clientId] = ws;
+    ws.clientId = clientId+"key";
+    clients[clientId+"key"] = ws;
     ws.on("message", function(message) {
         let messageData = JSON.parse(message);
         console.log("INCOMING! OBJECTIVE = " +messageData.objective);
         //if user needs to get his current state
         if (messageData.objective === "getState") {
-            let user =JSON.parse(JSON.stringify(getUserStateByField("md5", messageData.md5)));
+            let user = JSON.parse(JSON.stringify(getUserStateByField("md5", messageData.md5)));
             user.users = users;
             console.log("NEW USER CONNECTED! HIS ID = " + user.id);
             // we need set relationship between user's id and his WebSocket's clientId for sending message etc.
             ws.id = user.id;
-            ws.send(JSON.stringify(user));
+            clients[ws.clientId] = ws;
+            sendAllClientsState(clients)
+            // ws.send(JSON.stringify(user));
         }
         //if user needs to send a message to someone
         if (messageData.objective === "sendMessage"){
-            console.log("NEW MESSAGE FROM USER with clientID" + ws.id + " TO USER " + messageData.id);
+            console.log("NEW MESSAGE FROM USER with clientId" + ws.id + " TO USER " + messageData.id);
             //get sender's state and write his message to it
             let sender = getUserStateByField("id", ws.id);
             let senderDialogIndex = getDialogIndexByField(sender, "id",  messageData.id);
@@ -88,13 +90,45 @@ webSocketServer.on("connection", function(ws) {
     });
 
     ws.on("close", function() {
-        delete clients[clientId];
-    });
+        //change user's status to OFFLINE
+        let user = getUserStateByField("id", ws.id);
+        user.status = "offline";
+        updateUser(user);
+
+        //remove user connection from clients-array
+        console.log("BEFORE REMOVING clients.length = ", Object.keys(clients).length);
+        console.log("KEYS BEFORE");
+        console.log(Object.keys(clients));
+
+        console.log('TRYING TO REMOVE ws.clientId = ', ws.clientId);
+        delete clients[ws.clientId];
+
+        console.log("AFTER REMOVING clients.length = ", Object.keys(clients).length);
+        console.log("KEYS AFTER");
+        console.log(Object.keys(clients));
+
+        sendAllClientsState(clients)
+
 });
 
+});
+
+function sendAllClientsState(clients) {
+    Object.keys(clients).forEach((key) => {
+        let user = JSON.parse(JSON.stringify(getUserStateByField("id", clients[key].id)));
+        user.users = users;
+        clients[key].send(JSON.stringify(user));
+    })
+}
 
 app.post("/login", function(req, res) {
     if (isUserExist(req.body.md5)) {
+
+        //change user's status to ONLINE
+        let user = getUserStateByField("md5", req.body.md5);
+        user.status = "online";
+        updateUser(user);
+
         res.send({ status: "success" });
     } else {
         res.send({ status: "fail" });
@@ -102,7 +136,7 @@ app.post("/login", function(req, res) {
 });
 
 app.post("/register", function(req, res) {
-    if (registerUser(req.body.md5, req.body.username, maxClientId)) {
+    if (registerUser(req.body.md5, req.body.username, users.length)) {
         res.send({ status: "success" });
     } else {
         res.send({ status: "fail" });
@@ -116,11 +150,13 @@ function registerUser(md5, username, id) {
         let newUser = {
             id: id,
             username: username,
+            status: "offline",
             md5: md5,
             currentDialog: 0,
             dialogs: []
         };
         users.push(newUser);
+        console.log("ALL USERS ", users);
     }
     return success;
 }
