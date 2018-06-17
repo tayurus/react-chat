@@ -82,6 +82,8 @@ class App extends Component {
         return res;
     }
 
+
+
     render() {
         if (!this.state.logged) {
             return (

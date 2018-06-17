@@ -20,12 +20,33 @@ var users = [
         dialogs: [
            {
                id: 1,
-               username: "User2",
-               status: "online",
+               username: "TestUser",
+               status: "offline",
                visible: true,
                messagesHistory: [
                    {
                        type: "outgoing",
+                       text: "Yo bro!",
+                       date: new Date()
+                   }
+               ]
+           }
+       ]
+   },
+    {
+        id: 1,
+        username: "TestUser",
+        md5: "addc03596ec452c6aa729c2b8980fa32",
+        currentDialog: 0,
+        dialogs: [
+           {
+               id: 0,
+               username: "ChatCreator",
+               status: "offline",
+               visible: true,
+               messagesHistory: [
+                   {
+                       type: "incoming",
                        text: "Yo bro!",
                        date: new Date()
                    }
@@ -45,7 +66,10 @@ webSocketServer.on("connection", function(ws) {
         //if user needs to get his current state
         if (messageData.objective === "getState") {
             let user = JSON.parse(JSON.stringify(getUserStateByField("md5", messageData.md5)));
+            user.status = "online";
             user.users = users;
+            updateUser(user)
+
             console.log("NEW USER CONNECTED! HIS ID = " + user.id);
             // we need set relationship between user's id and his WebSocket's clientId for sending message etc.
             ws.id = user.id;
@@ -60,9 +84,8 @@ webSocketServer.on("connection", function(ws) {
             let sender = getUserStateByField("id", ws.id);
             let senderDialogIndex = getDialogIndexByField(sender, "id",  messageData.id);
             sender['dialogs'][senderDialogIndex].messagesHistory.push({
-                type : "outgoing",
+                type : "outgoing " + messageData.type,
                 text: messageData.text,
-                type: messageData.type,
                 date: new Date()
             });
 
@@ -73,9 +96,8 @@ webSocketServer.on("connection", function(ws) {
             let recepient = getUserStateByField("id", messageData.id);
             let recepientDialogIndex = getDialogIndexByField(recepient, "id", ws.id);
             recepient['dialogs'][recepientDialogIndex].messagesHistory.push({
-                type : "incoming",
+                type : "incoming " + messageData.type,
                 text: messageData.text,
-                type: messageData.type,
                 date: new Date()
             });
 
@@ -85,6 +107,7 @@ webSocketServer.on("connection", function(ws) {
             // send new states to both users
             ws.send(JSON.stringify(sender));
             let recepientSocket = getWebSocketUserById(messageData.id);
+            console.log("MESSAGEDATA.id = ", messageData.id);
             recepientSocket.send(JSON.stringify(recepient));
         }
     });
@@ -201,17 +224,17 @@ function updateUser(user){
         return (currentUser.id !== user.id)
     });
 
-    newUsers.push(user);
+    newUsers.push(JSON.parse(JSON.stringify(user)));
 
     users = newUsers;
 }
 
 function getWebSocketUserById(id){
     let res;
-    clients.forEach(function (connection) {
-        if (connection.id === id)
-            res = connection
-    });
+    Object.keys(clients).forEach((key) => {
+        if (clients[key].id === id)
+            res = clients[key];
+    })
 
     return res;
 }

@@ -5,11 +5,22 @@ import { SearchInput } from "../searchInput/SearchInput";
 export class UsersTable extends React.Component{
     constructor(props){
         super(props);
-        this.state = {currentTab: "my"}
+        this.state = {currentTab: "my"};
+        this.getUserStateByField = this.getUserStateByField.bind(this);
     }
 
     changeTab(tab){
         this.setState({currentTab: tab});
+    }
+
+    getUserStateByField(fieldName, value){
+        let res;
+        this.props.users.forEach((user) => {
+            if (user[fieldName] === value)
+                res = user;
+        })
+
+        return res;
     }
 
     render(){
@@ -29,7 +40,7 @@ export class UsersTable extends React.Component{
                     (this.state.currentTab === "my") ?
                         this.props.dialogs.filter(dialog => dialog.visible)
                         .map((dialog) => {
-                        return (<UserPreview status={dialog.status}
+                        return (<UserPreview status={this.getUserStateByField("id", dialog.id).status}
                                              username={dialog.username}
                                              text={dialog.messagesHistory.slice(-1)[0].text}
                                              id={dialog.id}
@@ -37,10 +48,11 @@ export class UsersTable extends React.Component{
                                 />)
                             })
                     :
-                    this.props.users.map(function(user){
+                    this.props.users.map((user) =>{
                         return (<UserPreview status={user.status}
                                              username={user.username}
                                              id={user.id}
+                                             showDialog={this.props.showDialog}
                                 />)
                             })
 
