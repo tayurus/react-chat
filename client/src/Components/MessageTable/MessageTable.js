@@ -9,6 +9,7 @@ export class MessageTable extends React.Component{
     }
 
     render(){
+        let status = this.props.getUserStateByField("id", this.props.dialog.id).status
         return (
             <div className="message-table">
                 <div className="message-table__user-info">
@@ -20,7 +21,8 @@ export class MessageTable extends React.Component{
                         <br/>
                         <span className="message-table__user-status">
                             {
-                                (this.props.dialog.status === "online") ? "online" : "offline"
+
+                                (status === "online") ? "online" : "offline"
                             }
                         </span>
                     </div>

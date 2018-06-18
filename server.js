@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 5000;
 
 let clients = [];
-let maxClientId = 0;
+let maxClientId = 2;
 
 
 var users = [
@@ -79,10 +79,13 @@ webSocketServer.on("connection", function(ws) {
         }
         //if user needs to send a message to someone
         if (messageData.objective === "sendMessage"){
-            console.log("NEW MESSAGE FROM USER with clientId" + ws.id + " TO USER " + messageData.id);
+            console.log("NEW MESSAGE FROM USER with USER" + ws.id + " TO USER " + messageData.id);
+            console.log("MESSSAGE TEXT " + messageData.text);
             //get sender's state and write his message to it
             let sender = getUserStateByField("id", ws.id);
             let senderDialogIndex = getDialogIndexByField(sender, "id",  messageData.id);
+            console.log("SENDER DIALOGS INDEX = ", senderDialogIndex);
+
             sender['dialogs'][senderDialogIndex].messagesHistory.push({
                 type : "outgoing " + messageData.type,
                 text: messageData.text,
@@ -90,7 +93,8 @@ webSocketServer.on("connection", function(ws) {
             });
 
             updateUser(sender);
-            console.log("SENDER dialogs WAS UPDATED ", sender.dialogs[0].messagesHistory);
+
+            // console.log("SENDERS dialogs was UPDATED", sender.dialogs[1].messagesHistory);
 
             //get recepient's state and write new message to it
             let recepient = getUserStateByField("id", messageData.id);
@@ -103,6 +107,9 @@ webSocketServer.on("connection", function(ws) {
 
             updateUser(recepient);
             console.log("RECEPIENT dialogs WAS UPDATED ", recepient.dialogs[0].messagesHistory);
+
+            sender.currentDialog = recepient.id;
+            recepient.currentDialog = sender.id;
 
             // send new states to both users
             ws.send(JSON.stringify(sender));
@@ -140,6 +147,7 @@ function sendAllClientsState(clients) {
     Object.keys(clients).forEach((key) => {
         let user = JSON.parse(JSON.stringify(getUserStateByField("id", clients[key].id)));
         user.users = users;
+        updateUser(user);
         clients[key].send(JSON.stringify(user));
     })
 }
@@ -176,9 +184,11 @@ function registerUser(md5, username, id) {
             status: "offline",
             md5: md5,
             currentDialog: 0,
-            dialogs: []
+            dialogs: [],
         };
-        users.push(newUser);
+        users.push(JSON.parse(JSON.stringify(newUser)));
+        newUser.users = users;
+        updateUser(newUser);
         console.log("ALL USERS ", users);
     }
     return success;
@@ -215,6 +225,25 @@ function getDialogIndexByField(user, fieldName, value){
         }
     });
 
+    //if user has not dialog with currentDialogId yet
+    if (typeof (res) === "undefined"){
+        let recepient = getUserStateByField("id", value);
+        console.log("getDialogIndexByField!!! recepient = ", recepient);
+        //search this user in users-array
+        let newDialog =  {
+               id: value,
+               username: recepient.username,
+               status: recepient.status,
+               visible: true,
+               messagesHistory: []
+           }
+         user.dialogs.push(newDialog);
+         updateUser(user)
+
+         res = user.dialogs.length - 1;
+    }
+
+
     return res;
 }
 
@@ -225,7 +254,6 @@ function updateUser(user){
     });
 
     newUsers.push(JSON.parse(JSON.stringify(user)));
-
     users = newUsers;
 }
 

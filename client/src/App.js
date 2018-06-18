@@ -17,7 +17,7 @@ class App extends Component {
         this.login = this.login.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.getDialogIndexByField = this.getDialogIndexByField.bind(this);
-
+        this.getUserStateByField = this.getUserStateByField.bind(this);
         // setting start state
         this.state = { loaded: false, logged: false };
     }
@@ -25,6 +25,7 @@ class App extends Component {
     // just change current dialog index state
     showDialog(id) {
         this.setState({ currentDialog: id });
+        console.log("CURRENT DIALOG = " + id);
     }
 
     // goes across all users and hide users, which does not contain search-pharse
@@ -49,6 +50,7 @@ class App extends Component {
 
         //All next operations between user and server will use WebSockets
         this.socket = new WebSocket("ws://localhost:5001");
+        // this.socket = new WebSocket("ws://192.168.26.238:5001");
         this.socket.onopen = () => this.socket.send(JSON.stringify({ objective: "getState", md5: md5 }));
         this.socket.onmessage = message => {
             let state = JSON.parse(message.data);
@@ -71,6 +73,17 @@ class App extends Component {
         this.socket.send(JSON.stringify(message));
     }
 
+    getUserStateByField(fieldName, value) {
+        let res;
+        this.state.users.forEach(function(user) {
+            if (user[fieldName] === value) {
+                res = user;
+            }
+        });
+
+        return res;
+    }
+
     getDialogIndexByField(fieldName, value) {
         let res;
         this.state.dialogs.forEach(function(dialog, index) {
@@ -79,7 +92,30 @@ class App extends Component {
             }
         });
 
+
+        //if user has not dialog with currentDialogId yet
+        if (typeof (res) === "undefined"){
+
+            //search this user in users-array
+            let user = this.getUserStateByField("id", this.state.currentDialog);
+            console.log("CLICKED USER", user);
+            let newDialog =  {
+                   id: user.id,
+                   username: user.username,
+                   status: user.status,
+                   visible: true,
+                   messagesHistory: []
+               }
+             this.state.dialogs.push(newDialog);
+
+             res = this.state.dialogs.length - 1;
+        }
+        else{
+            console.log("getDialogIndexByField. RES != undefined. RES = " + res);
+        }
+
         return res;
+
     }
 
 
@@ -109,15 +145,14 @@ class App extends Component {
                 return (
                     <div className="App">
                         <div className="App__wrapper">
-                            <UsersTable users = {this.state.users} searchUsers={this.searchUsers} dialogs={this.state.dialogs} showDialog={this.showDialog} />
-                            {this.state.dialogs.length > 0 ? (
+                            <UsersTable users = {this.state.users} searchUsers={this.searchUsers} dialogs={this.state.dialogs} showDialog={this.showDialog} getUserStateByField={this.getUserStateByField} />
                                 <MessageTable
+                                    getUserStateByField={this.getUserStateByField}
                                     sendMessage={this.sendMessage}
+                                    users={this.state.users}
                                     dialog={this.state.dialogs[this.getDialogIndexByField("id", this.state.currentDialog)]}
                                 />
-                            ) : (
-                                ""
-                            )}
+
                         </div>
                     </div>
                 );
